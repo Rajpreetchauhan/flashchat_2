@@ -15,11 +15,25 @@ class Appcontroller extends GetxController {
   TextEditingController rfirstnametexteditingcontroller=TextEditingController();
   TextEditingController rlastnametexteditingcontroller=TextEditingController();
 
+  TextEditingController sendmessagecotroller =TextEditingController();
+
 var  isloading=false.obs;
+  var  currentuserfirstnamebylogin="".obs;
+  var  currentuserlastnamebylogin="".obs;
 
 TextEditingController searchbarcontroller= TextEditingController();
 
- var userdatafromquery=<Userdata>[].obs;
+ var userDataListForSearch=<Userdata>[].obs;
+
+ var userDataListForSharedpreferance=<Userdata>[].obs;
+
+  var chatroomid="".obs;
+
+  var username1="".obs;
+  var username2="".obs;
+
+  var isMessageSendByMe=false.obs;
 
 
+  var usernam1listforrecentchat =[].obs;
 }

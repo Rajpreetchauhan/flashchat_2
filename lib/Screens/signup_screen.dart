@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flashchat_2/Controller/Getxcontroller.dart';
+import 'package:flashchat_2/Screens/recentchats_screen.dart';
 import 'package:flashchat_2/Screens/search_screen.dart';
 import 'package:flashchat_2/Screens/signin_screen.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:get/get.dart';
 import '../Firebase/database.dart';
 import '../Widgets/login_signup_button.dart';
 import '../Widgets/textfield_widget.dart';
+import '../sharedpreferance/sharedpreferance.dart';
 import 'chat_screen.dart';
 
 class Signup extends StatelessWidget {
@@ -18,6 +20,8 @@ final Appcontroller _appcontroller=Get.put(Appcontroller());
 final FirebaseAuth _auth = FirebaseAuth.instance;
   Databasefunctions databasefunctions=Databasefunctions();
 
+
+
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
@@ -25,7 +29,7 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: const BackButton(color: Colors.white),
+        leading: GestureDetector(onTap: () async { await _auth.signOut();},child: const BackButton(color: Colors.white,)),
       ),
       body: _appcontroller.isloading.value ? const Center(child: CircularProgressIndicator()) :Center(
         child: SingleChildScrollView(
@@ -85,13 +89,21 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
                 child: Loginsignupbutton(
                   onpressed: () async {
                     try{if (_formKey.currentState!.validate()) {
-                      Map<String,String> userdatainmapform={"firstname": _appcontroller.rfirstnametexteditingcontroller.text,"lastname": _appcontroller.rlastnametexteditingcontroller.text,"email": _appcontroller.remailtexteditingcontroller.text,};
+                      SharedPreferenceData.setIsLogin(true);
+                      SharedPreferenceData.setUserFirstName(_appcontroller.rfirstnametexteditingcontroller.text.trim().toLowerCase());
+                      SharedPreferenceData.setUserLastName(_appcontroller.rlastnametexteditingcontroller.text.trim().toLowerCase());
+                      SharedPreferenceData.setUserEmail(_appcontroller.remailtexteditingcontroller.text.trim().toLowerCase());
+
+                      Map<String,String> userdatainmapform={"firstname": _appcontroller.rfirstnametexteditingcontroller.text.toLowerCase(),"lastname": _appcontroller.rlastnametexteditingcontroller.text.toLowerCase(),"email": _appcontroller.remailtexteditingcontroller.text.toLowerCase(),};
                       _appcontroller.isloading.value=true;
-                      databasefunctions.uploaduserdata(userdatainmapform);
+
                       UserCredential usercredential=await _auth.createUserWithEmailAndPassword(email: _appcontroller.remailtexteditingcontroller.text, password: _appcontroller.rpasswordtexteditingcontroller.text);
+
                       if(usercredential !=null){
+                        await databasefunctions.uploaduserdata(userdatainmapform,usercredential.user?.uid);
+
                         _appcontroller.isloading.value=false;
-                        Get.to(()=>Searchcontainer());
+                        Get.to(()=>RecentchatScreen());
                       }
                     }} catch(e){
                       _appcontroller.isloading.value=false;
