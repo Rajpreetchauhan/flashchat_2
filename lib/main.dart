@@ -4,7 +4,9 @@ import 'package:flashchat_2/sharedpreferance/sharedpreferance.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'Screens/chat_screen.dart';
+import 'Screens/home_screen.dart';
 import 'Screens/recentchats_screen.dart';
+import 'Screens/sccretlock_screen.dart';
 import 'Screens/search_screen.dart';
 import 'Screens/signin_screen.dart';
 import 'Screens/signup_screen.dart';
@@ -20,27 +22,8 @@ runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      home: FutureBuilder<Widget>(
-        future: getscreen(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return const Scaffold(
-              body: Center(
-                child: Text("Error loading data."),
-              ),
-            );
-          } else {
-            return snapshot.data ?? Signin(); // Show Signin screen by default if data is null
-          }
-        },
-      ),
+    return   GetMaterialApp(
+      home: Scretlockscreen()
     );
   }
 }
@@ -49,12 +32,4 @@ class MyApp extends StatelessWidget {
 
 
 
-Future<Widget> getscreen() async {
-  try {
-    bool isLogin = await SharedPreferenceData.getIsLogin();
-    return isLogin ? RecentchatScreen() : Signin();
-  } catch (e) {
-    print("____ $e ____");
-    return Signin(); // Return Signin screen in case of any error
-  }
-}
+

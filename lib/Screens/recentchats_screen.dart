@@ -90,9 +90,10 @@ class _GetrecentchatsState extends State<Getrecentchats> {
 
   @override
   void initState() {
-    getusername2();
+     getusername2();
     super.initState();
   }
+
   getChatRoomId(String a,String b){
     if(a.substring(0,1).codeUnitAt(0)>b.substring(0,1).codeUnitAt(0)){
       return "$b\_$a";
@@ -126,9 +127,9 @@ class _GetrecentchatsState extends State<Getrecentchats> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return Obx(() => StreamBuilder(
         stream:
-            databasefunctions.getRecentChats(_appcontroller.username2.value),
+        databasefunctions.getRecentChats(_appcontroller.username2.value),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -165,7 +166,7 @@ class _GetrecentchatsState extends State<Getrecentchats> {
                       GestureDetector(
                         onTap: (){createcommucntionroom(index,_appcontroller.usernam1listforrecentchat.value[index]);},
                         child: Container(
-                          height: 70,
+                            height: 70,
                             color: Colors.grey,
                             child: Row(
                               children: [
@@ -179,6 +180,6 @@ class _GetrecentchatsState extends State<Getrecentchats> {
                   );
                 });
           }
-        });
+        }));
   }
 }

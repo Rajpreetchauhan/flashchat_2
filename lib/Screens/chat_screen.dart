@@ -16,7 +16,11 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   Databasefunctions databasefunctions = Databasefunctions();
   final Appcontroller _appcontroller = Get.put(Appcontroller());
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  ScrollController _scrollController =ScrollController();
+
+scrolltobottom(){
+  _scrollController.animateTo(_scrollController.position.maxScrollExtent,duration: Duration(milliseconds: 500), curve: Curves.ease);
+}
 
   sendMessage() async {
     if (_appcontroller.sendmessagecotroller.value != null) {
@@ -31,15 +35,18 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Widget chatListWidget() {
+  Widget chatListStreambuilder() {
+
     return StreamBuilder(
         stream: databasefunctions
             .getconersationmessage(_appcontroller.chatroomid.value),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
+              controller: _scrollController,
                 itemCount: snapshot.data?.docs.length,
                 itemBuilder: (context, index) {
+
                   if (snapshot.data!.docs[index]['sentby'] !=
                       _appcontroller.username1.value) {
                     return messageTileWidget(
@@ -64,30 +71,27 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       appBar: AppBar(leading: BackButton()),
       body: Column(children: [
-        Expanded(child: chatListWidget()),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            color: Colors.brown,
-            child: SizedBox(
-                height: 70,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: TextFormField(
-                        controller: _appcontroller.sendmessagecotroller,
-                      )),
-                      TextButton(
-                          onPressed: () {
-                            sendMessage();
-                          },
-                          child: const Icon(Icons.send))
-                    ],
-                  ),
+        Expanded(child: chatListStreambuilder()),
+        Container(
+          height: 70,
+          color: Colors.brown,
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            child: Row(
+              children: [
+                Expanded(
+                    child: TextFormField(
+                  controller: _appcontroller.sendmessagecotroller,
                 )),
+                TextButton(
+                    onPressed: () {
+                      sendMessage();
+                      scrolltobottom();
+                    },
+                    child: const Icon(Icons.send))
+              ],
+            ),
           ),
         ),
       ]),

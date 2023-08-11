@@ -6,6 +6,9 @@ import '../Models/models.dart';
 
 class Appcontroller extends GetxController {
 
+
+
+
   TextEditingController emailtexteditingcontroller=TextEditingController();
   TextEditingController passwordtexteditingcontroller=TextEditingController();
 
