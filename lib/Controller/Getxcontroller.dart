@@ -39,4 +39,5 @@ TextEditingController searchbarcontroller= TextEditingController();
 
 
   var usernam1listforrecentchat =[].obs;
+  var Scrollindex=0.obs;
 }
